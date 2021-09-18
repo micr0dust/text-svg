@@ -3,10 +3,6 @@
     "version": "1.0.0",
     "description": "![](https://text-to-svg.herokuapp.com/svg.png)",
     "main": "index.js",
-    "engines": {
-        "npm": "7.22.0",
-        "node": "14.17.6"
-    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node index.js"
