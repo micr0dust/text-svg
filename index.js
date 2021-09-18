@@ -1,8 +1,8 @@
 const oSVG = require('text-svg');
+const clientIp = require('client-ip');
 const http = require('http');
 const geoip = require('geoip-lite');
 const countries = require("@ntpu/i18n-iso-countries");
-const clientIp = require('client-ip');
 
 const cFontPathAndName = __dirname + "/fonts/NotoSansCJKtc-Regular.otf";
 let oOptions;
