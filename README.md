@@ -1,1 +1,1 @@
-![](https://text-svg.herokuapp.com/white/ip.png)
+![](https://text-svg.herokuapp.com/white/location.png)
