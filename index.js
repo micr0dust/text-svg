@@ -73,6 +73,12 @@ var server = http.createServer(function(req, res) {
             let svg = oSVG("這張寫著 " + ip + " 的紙條好像是你的，還你", oOptions)
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
+        } else {
+            let geo = geoip.lookup(ip);
+            let svg = oSVG("", oOptions);
+            if (geo) svg = oSVG(countries.getName(geo.country, "tw"), oOptions);
+            res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
+            res.end(svg);
         }
     }
 
