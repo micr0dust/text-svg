@@ -4,8 +4,8 @@
     "description": "![](https://text-to-svg.herokuapp.com/svg.png)",
     "main": "index.js",
     "engines": {
-        "npm": "14.17.6",
-        "node": "7.22.0"
+        "npm": "7.22.0",
+        "node": "14.17.6"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
