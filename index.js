@@ -11,16 +11,17 @@ var server = http.createServer(function(req, res) {
     var ip = clientIp(req);
     let txt = "";
     let url = req.url;
+    oOptions = {
+        localFontPath: cFontPathAndName
+    };
     if (url.indexOf('/white') + 1) {
         url = url.replace("/white", "");
         oOptions = {
             localFontPath: cFontPathAndName,
             color: 'white',
         };
-    } else {
-        oOptions = {
-            localFontPath: cFontPathAndName
-        };
+    } else if(url.indexOf('/dark') + 1){
+        url = url.replace("/dark", "");
     }
 
 
