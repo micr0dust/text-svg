@@ -1,4 +1,4 @@
-const oSVG = require('text-svg');
+const createTextSVG = require('./simple-svg');
 const clientIp = require('client-ip');
 const http = require('http');
 const geoip = require('geoip-lite');
@@ -6,17 +6,7 @@ const countries = require("@ntpu/i18n-iso-countries");
 const fs = require('fs');
 const path = require('path');
 
-const cFontPathAndName = path.join(__dirname, "fonts", "NotoSansCJKtc-Regular.otf");
 let oOptions;
-
-// 檢查字體檔案是否存在
-if (fs.existsSync(cFontPathAndName)) {
-    console.log('字體檔案找到:', cFontPathAndName);
-} else {
-    console.error('字體檔案不存在:', cFontPathAndName);
-    console.log('當前目錄:', __dirname);
-    console.log('fonts 目錄內容:', fs.readdirSync(path.join(__dirname, 'fonts')));
-}
 
 
 var server = http.createServer(function(req, res) {
@@ -25,21 +15,25 @@ var server = http.createServer(function(req, res) {
         let txt = "";
         let url = req.url;
         oOptions = {
-            localFontPath: fs.existsSync(cFontPathAndName) ? cFontPathAndName : undefined
+            fontSize: 20,
+            color: 'black',
+            fontFamily: 'Noto Sans TC, Arial, sans-serif'
         };
         
         console.log('請求 URL:', url, '來源 IP:', ip);
     if (url.indexOf('/white') + 1) {
         url = url.replace("/white", "");
         oOptions = {
-            localFontPath: fs.existsSync(cFontPathAndName) ? cFontPathAndName : undefined,
+            fontSize: 20,
             color: 'white',
+            fontFamily: 'Noto Sans TC, Arial, sans-serif'
         };
     } else if(url.indexOf('/dark') + 1){
         url = url.replace("/dark", "");
         oOptions = {
-            localFontPath: fs.existsSync(cFontPathAndName) ? cFontPathAndName : undefined,
+            fontSize: 20,
             color: 'black',
+            fontFamily: 'Noto Sans TC, Arial, sans-serif'
         };
     }
 
@@ -49,7 +43,7 @@ var server = http.createServer(function(req, res) {
             let data = url.split('?')[1] || "";
             let txt1 = decodeURI(data.split('&')[0]) || "";
             let txt2 = decodeURI(data.split('&')[1]) || "";
-            let svg = oSVG(txt1 + ip + txt2, oOptions)
+            let svg = createTextSVG(txt1 + ip + txt2, oOptions)
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
         } else if (url.split('?')[0] === '/custom/location.png' || url === '/location.png') {
@@ -63,18 +57,18 @@ var server = http.createServer(function(req, res) {
                 txt = geo.city;
                 txt = cityFn(txt, countries.getName(geo.country, lang));
             }
-            let svg = oSVG(txt1 + txt + txt2, oOptions);
+            let svg = createTextSVG(txt1 + txt + txt2, oOptions);
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
         } else if (url.split('?')[0] === '/custom/text.png' || url === '/text.png') {
             txt = decodeURI(url.split('?')[1] || "");
-            let svg = oSVG(txt, oOptions)
+            let svg = createTextSVG(txt, oOptions)
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
         } else {
             let geo = geoip.lookup(ip);
-            let svg = oSVG("", oOptions);
-            if (geo) svg = oSVG(countries.getName(geo.country, "tw"), oOptions);
+            let svg = createTextSVG("", oOptions);
+            if (geo) svg = createTextSVG(countries.getName(geo.country, "tw"), oOptions);
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
         }
@@ -85,17 +79,17 @@ var server = http.createServer(function(req, res) {
                 txt = geo.city;
                 txt = cityFn(txt, countries.getName(geo.country, "tw"));
             }
-            let svg = oSVG("明天想去" + txt + "玩", oOptions);
+            let svg = createTextSVG("明天想去" + txt + "玩", oOptions);
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
         } else if (url === '/ip.png') {
-            let svg = oSVG("這張寫著 " + ip + " 的紙條好像是你的，還你", oOptions)
+            let svg = createTextSVG("這張寫著 " + ip + " 的紙條好像是你的，還你", oOptions)
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
         } else {
             let geo = geoip.lookup(ip);
-            let svg = oSVG("", oOptions);
-            if (geo) svg = oSVG(countries.getName(geo.country, "tw"), oOptions);
+            let svg = createTextSVG("", oOptions);
+            if (geo) svg = createTextSVG(countries.getName(geo.country, "tw"), oOptions);
             res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
             res.end(svg);
         }
