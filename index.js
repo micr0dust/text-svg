@@ -3,25 +3,44 @@ const clientIp = require('client-ip');
 const http = require('http');
 const geoip = require('geoip-lite');
 const countries = require("@ntpu/i18n-iso-countries");
-const cFontPathAndName = __dirname + "/fonts/NotoSansCJKtc-Regular.otf";
+const fs = require('fs');
+const path = require('path');
+
+const cFontPathAndName = path.join(__dirname, "fonts", "NotoSansCJKtc-Regular.otf");
 let oOptions;
+
+// 檢查字體檔案是否存在
+if (fs.existsSync(cFontPathAndName)) {
+    console.log('字體檔案找到:', cFontPathAndName);
+} else {
+    console.error('字體檔案不存在:', cFontPathAndName);
+    console.log('當前目錄:', __dirname);
+    console.log('fonts 目錄內容:', fs.readdirSync(path.join(__dirname, 'fonts')));
+}
 
 
 var server = http.createServer(function(req, res) {
-    var ip = clientIp(req);
-    let txt = "";
-    let url = req.url;
-    oOptions = {
-        localFontPath: cFontPathAndName
-    };
+    try {
+        var ip = clientIp(req);
+        let txt = "";
+        let url = req.url;
+        oOptions = {
+            localFontPath: fs.existsSync(cFontPathAndName) ? cFontPathAndName : undefined
+        };
+        
+        console.log('請求 URL:', url, '來源 IP:', ip);
     if (url.indexOf('/white') + 1) {
         url = url.replace("/white", "");
         oOptions = {
-            localFontPath: cFontPathAndName,
+            localFontPath: fs.existsSync(cFontPathAndName) ? cFontPathAndName : undefined,
             color: 'white',
         };
     } else if(url.indexOf('/dark') + 1){
         url = url.replace("/dark", "");
+        oOptions = {
+            localFontPath: fs.existsSync(cFontPathAndName) ? cFontPathAndName : undefined,
+            color: 'black',
+        };
     }
 
 
@@ -109,6 +128,11 @@ var server = http.createServer(function(req, res) {
         if (city.indexOf("Matsu") + 1) return "馬祖";
         if (city.indexOf("Lienchiang") + 1) return "連江縣";
         return country;
+    }
+    } catch (error) {
+        console.error('伺服器錯誤:', error);
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
     }
 });
 

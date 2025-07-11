@@ -1,0 +1,10 @@
+version: 1
+build:
+  commands:
+    - npm install
+serve:
+  command: npm start
+  env: node
+staticFiles:
+  - path: fonts
+    pathPrefix: /fonts
